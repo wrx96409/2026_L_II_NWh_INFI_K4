@@ -1,19 +1,22 @@
-version: 2.1 
+version: 2.1
 
-jobs: 
-  build-and-test:  
-    machine: 
-      image: ubuntu-2004:current 
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.10  # lub inny obraz z dockerem
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Buduj i wypchnij obraz Docker
+          command: make docker_push
 
-    steps: 
-      - checkout 
-      - run: make deps 
-      - run: make test       
-
-workflows: 
-  basic:  
-    jobs: 
-      - build-and-test 
+workflows:
+  version: 2
+  build-and-push:
+    jobs:
+      - build
 
 steps:
   - checkout
